@@ -1,0 +1,29 @@
+# hosts         This file describes a number of hostname-to-address
+#               mappings for the TCP/IP subsystem.  It is mostly
+#               used at boot time, when no name servers are running.
+#               On small systems, this file can be used instead of a
+#               "named" name server.
+# Syntax:
+#
+# IP-Address  Full-Qualified-Hostname  Short-Hostname
+#
+
+127.0.0.1       localhost
+10.125.1.41     jara-k8s-stage2-01
+10.125.1.42     jara-k8s-stage2-02  
+10.125.1.43     jara-k8s-stage2-03  
+10.125.1.44     jara-k8s-stage2-04  
+10.125.1.45     jara-k8s-stage2-05
+10.125.1.40     cluster-stage2-join
+10.125.1.40     cluster-stage2-join.int.vmar
+
+
+# special IPv6 addresses
+::1             localhost ipv6-localhost ipv6-loopback
+
+fe00::0         ipv6-localnet
+
+ff00::0         ipv6-mcastprefix
+ff02::1         ipv6-allnodes
+ff02::2         ipv6-allrouters
+ff02::3         ipv6-allhosts

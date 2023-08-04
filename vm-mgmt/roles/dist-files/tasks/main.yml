@@ -1,0 +1,36 @@
+---
+- name: Distribute sysctl.conf
+  ansible.builtin.copy:
+    src: roles/dist-files/files/sysctl.conf
+    dest: /etc/sysctl.d/sysctl.conf
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+
+- name: Reload sysctl so previous task takes effect
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: systemd-sysctl
+
+- name: Distribute hosts file
+  ansible.builtin.copy:
+    src: roles/dist-files/files/hosts
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+
+#- name: Distribute resolv.conf file
+#  ansible.builtin.copy:
+#    src: roles/dist-files/files/resolv.conf
+#    dest: /etc/resolv.conf
+#    owner: root
+#    group: root
+#    mode: '0644'
+#  become: true
+
+# Copying all the rke2 config files to the nodes!
+# Location /etc/rancher/rke2/config.yaml

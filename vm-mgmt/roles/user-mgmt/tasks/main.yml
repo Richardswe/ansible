@@ -1,0 +1,64 @@
+---
+- name: Make sure we have a 'wheel' group (SUSE-systems)
+  group:
+    name: wheel
+    state: present
+  when: 
+    (ansible_facts['distribution'] == "openSUSE Leap") or
+    (ansible_facts['distribution'] == "SUSE")
+
+- name: Install the sudo package (SUSE"-systems)
+  community.general.zypper:
+    name: sudo
+    state: present
+  when: 
+    (ansible_facts['distribution'] == "openSUSE Leap") or
+    (ansible_facts['distribution'] == "SUSE")
+ 
+- name: Allow 'wheel' group to use sudo (SUSE-systems)
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) ALL'
+    validate: 'visudo -cf %s'
+  when: 
+      (ansible_facts['distribution'] == "openSUSE Leap") or
+      (ansible_facts['distribution'] == "SUSE")
+
+- name: Allow 'sudo' group to use root (Ubuntu-systems)
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%sudo'
+    line: '%sudo ALL=(ALL) ALL'
+    validate: 'visudo -cf %s'
+  when: 
+      (ansible_facts['distribution'] == "Ubuntu") or
+      (ansible_facts['distribution'] == "Debian")
+
+- name: Create the user pw file with content (SUSE"-systems)
+  copy: 
+    dest: /etc/sudoers.d/userpw
+    content: Defaults !targetpw 
+  when: 
+      (ansible_facts['distribution'] == "openSUSE Leap") or
+      (ansible_facts['distribution'] == "SUSE")
+     
+- name: Add the users with the shell bash, appending the group 'wheel'
+  user:
+    name: "{{ item.name }}"
+    uid: "{{ item.uid }}"
+    password: "{{lookup('vars', item.name + '_password')}}" 
+    shell: /bin/bash
+    groups: wheel
+    append: yes
+  with_items: 
+  - "{{ users }}"
+
+- name: "Add authorized keys"
+  authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ lookup('file', 'files/'+ item.name + '_id_rsa.pub') }}"
+  with_items: 
+  - "{{ users }}"

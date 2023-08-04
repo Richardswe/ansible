@@ -1,0 +1,13 @@
+write-kubeconfig-mode: "0644"
+token:
+server: 
+tls-san:
+- jara-k8s-stage2-06
+- jara-k8s-stage2-06.int.vmar.se
+- cluster-stage2-join
+- 10.125.1.40
+node-label:
+  - "node-role.kubernetes.io/worker=worker"
+disable: rke2-ingress-nginx
+cni: 
+- canal

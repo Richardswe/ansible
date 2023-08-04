@@ -1,0 +1,7 @@
+- hosts: all 
+  gather_facts: true
+  vars_files: 
+    - /home/rick/Documents/git/vm-mgmt/ansible/roles/user-mgmt/files/my_vault.yaml
+  roles: 
+    - {role: user-mgmt}
+
