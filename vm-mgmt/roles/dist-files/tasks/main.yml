@@ -6,7 +6,6 @@
     owner: root
     group: root
     mode: '0644'
-  become: true
 
 - name: Reload sysctl so previous task takes effect
   ansible.builtin.systemd:
@@ -21,7 +20,6 @@
     owner: root
     group: root
     mode: '0644'
-  become: true
 
 #- name: Distribute resolv.conf file
 #  ansible.builtin.copy:

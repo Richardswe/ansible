@@ -1,0 +1,13 @@
+--- 
+- name: Delete user/user's  
+  user:
+    name: "{{ item.name }}"
+    state: absent 
+    remove: yes 
+  register: deleted_user 
+  with_items: 
+  - "{{ users }}"
+
+- name: Message deleted Users 
+  debug:
+    msg: "Finished deleting user/user's {{ users }} "

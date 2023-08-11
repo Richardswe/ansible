@@ -4,5 +4,4 @@
   vars_files: 
     - ~/Documents/git/vm-mgmt/ansible/roles/user-mgmt/vars/main.yml
   roles: 
-    - {role: add-user }
-
+    - {role: delete-user }

@@ -45,20 +45,36 @@
       (ansible_facts['distribution'] == "openSUSE Leap") or
       (ansible_facts['distribution'] == "SUSE")
      
-- name: Add the users with the shell bash, appending the group 'wheel'
+- name: Add the users with the bash shell, appending the group 'sudo'
   user:
     name: "{{ item.name }}"
-    uid: "{{ item.uid }}"
     password: "{{lookup('vars', item.name + '_password')}}" 
     shell: /bin/bash
-    groups: wheel
+    groups: sudo  
     append: yes
   with_items: 
   - "{{ users }}"
+  when: 
+      (ansible_facts['distribution'] == "Ubuntu") or
+      (ansible_facts['distribution'] == "Debian")
+
+- name: Add the users with the bash shell, appending the group 'wheel'
+  user:
+    name: "{{ item.name }}"
+    password: "{{lookup('vars', item.name + '_password')}}" 
+    shell: /bin/bash
+    groups: wheel  
+    append: yes
+  with_items: 
+  - "{{ users }}"
+  when: 
+      (ansible_facts['distribution'] == "OpenSUSE") or
+      (ansible_facts['distribution'] == "SUSE")
 
 - name: "Add authorized keys"
   authorized_key:
     user: "{{ item.name }}"
     key: "{{ lookup('file', 'files/'+ item.name + '_id_rsa.pub') }}"
+  ignore_errors: true
   with_items: 
   - "{{ users }}"

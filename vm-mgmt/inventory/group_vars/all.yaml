@@ -1,5 +1,3 @@
 ---
 users:
-  - { name: rickard_admin, uid: 1002 }
-
-
+  - { name: rickard }

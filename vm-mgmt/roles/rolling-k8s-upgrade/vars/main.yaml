@@ -1,0 +1,5 @@
+--- 
+# Choose OpenSUSE version
+opensuse_version: 15.5
+# Choose kubeconfig 
+kubeconfig_name: 
