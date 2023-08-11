@@ -1,1 +1,2 @@
-~/Documents/git/richard-private/ansible/vm-mgmt/roles/user-mgmt/files/*
+~/Documents/git/richard-private/ansible/vm-mgmt/roles/user-mgmt/files/**
+~/Documents/git/richard-private/ansible/vm-mgmt/inventory/private-*
