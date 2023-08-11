@@ -1,4 +1,4 @@
-- hosts: k8s_all_lab 
+- hosts: db_servers 
   become: true 
   gather_facts: true
   vars_files: 

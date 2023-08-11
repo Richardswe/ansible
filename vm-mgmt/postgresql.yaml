@@ -1,8 +1,0 @@
----
-- hosts: dbservers
-  become: true 
-  gather_facts: true
-  # vars_files: 
-  #   - /home/rick/Documents/git/vm-mgmt/my_vault.yaml
-  roles: 
-    - {role: postgresql }

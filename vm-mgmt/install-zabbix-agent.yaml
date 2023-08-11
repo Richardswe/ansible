@@ -1,5 +1,5 @@
 ---
-- hosts: k8s_all_prod
+- hosts: db_servers 
   become: true 
   gather_facts: true
   roles: 
