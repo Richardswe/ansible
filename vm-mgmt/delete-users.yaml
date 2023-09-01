@@ -3,6 +3,6 @@
   become: true 
   gather_facts: true
   vars_files: 
-    - ~/Documents/git/vm-mgmt/ansible/roles/user-mgmt/vars/main.yml
+    - /yourgitfolder/vm-mgmt/roles/user-mgmt/vars/main.yml
   roles: 
     - {role: delete-user }
