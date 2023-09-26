@@ -28,20 +28,7 @@ data:
             ttl 30
         }
         hosts {
-          10.43.69.197 fasapp.se
-          10.43.69.197 www.fasapp.se
-          172.19.253.43 gitlab.int.vmar.se
-          172.18.253.29 git.vmar.se
-          10.43.69.197  fasapp.se
-          10.43.69.197  www.fasapp.se     # byt till den relevanta dns:en och nod-IP
-          10.43.69.197  calc.vmar.xyz
-          10.43.69.197  boozternetwork.com
-          10.43.69.197  www.boozternetwork.com
-          10.43.69.197  home.aviationisolutions.com
-          10.43.69.197  www.home.aviationisolutions.com
-          10.43.69.197  www.stage.aviationisolutions.com
-          10.43.69.197  stage.aviationisolutions.com
-          10.43.69.197  herelius.se
+          10.43.69.100 yourdomainname.com   # change to your domain and the IP shall be your traefik cluster IP
           fallthrough
         }
         prometheus :9153
