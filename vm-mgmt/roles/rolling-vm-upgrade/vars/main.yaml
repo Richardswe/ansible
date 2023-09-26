@@ -1,0 +1,17 @@
+--- 
+# Choose OpenSUSE version 15.4 or 15.5
+opensuse_version: 
+
+# Choose kubeconfig 
+kubeconfig_name: 
+
+# Your local user 
+local_user: rickard
+
+# true or false boolean if the nodes are being used as k8s nodes.
+upgrade_k8s_node: false 
+
+# true or false if upgrade of ubuntu
+ubuntu_distupgrade: false
+
+suseos_upgrade: false 

@@ -1,0 +1,26 @@
+---                                                                                                                                                                                                                  
+- name: Create or patch the RKE2-CoreDns ConfigMap
+  become_user: "{{ local_username }}"
+  connection: local
+  vars:
+    ansible_python_interpreter: /usr/bin/python3                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+  k8s:
+    src: roles/update-coredns-cm/templates/{{ core_dns }}
+    state: present
+    apply: true
+    kubeconfig: ~/.kube/{{ kubeconfig_name }}                                                                                                                                                                                                             
+  delegate_to: localhost
+
+- name: Delete the RKE2-coredns pods 
+  become_user: "{{ local_username }}"  
+  connection: local
+  vars:
+    ansible_python_interpreter: /usr/bin/python3                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+  k8s:
+    namespace: kube-system
+    kind: pod
+    label_selectors: 
+    - app.kubernetes.io/name=rke2-coredns
+    state: absent
+    kubeconfig: ~/.kube/{{ kubeconfig_name }}                                                                                                                                                                                                             
+  delegate_to: localhost

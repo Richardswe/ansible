@@ -1,6 +1,6 @@
 ---
 - name: "Drain node {{ ansible_hostname|lower }} , even if there are pods not managed by a ReplicationController, Job, or DaemonSet on it."
-  become_user: rick  
+  become_user: local_user
   connection: local
   vars:
     ansible_python_interpreter: /usr/bin/python3
@@ -15,25 +15,57 @@
       terminate_grace_period: 10
       wait_sleep: 90
   delegate_to: localhost
+  when: upgrade_k8s_node | bool == true
 
 - name: Update the repository cache Ubuntu 
   ansible.builtin.apt:
     update_cache: yes
   when: 
-    ansible_facts['distribution'] == "Ubuntu"
+   -  ansible_facts['distribution'] == "Ubuntu"
+   -  ansible_facts['distribution'] == "Debian"
 
 - name: Upgrade all the packages 
   ansible.builtin.apt:
     upgrade: full 
   when: 
+   - ansible_facts['distribution'] == "Ubuntu" 
+   - ansible_facts['distribution'] == "Debian"
+  register: debian-based-os_full
+
+- name: Reboot {{ ansible_hostname|lower }}
+  ansible.builtin.reboot:
+    reboot_timeout: 180
+  when: debian-based-os_full.changed
+
+- name: Apt-get autoremove 
+  ansible.builtin.apt:
+  when: 
+  -  ansible_facts['distribution'] == "Ubuntu"
+  -  ansible_facts['distribution'] == "Debian"
+
+- name: Install manager core
+  ansible.builtin.apt:
+    name: update-manager-core
+    state: present
+  when: 
     ansible_facts['distribution'] == "Ubuntu"
+    
+- name: Do dist upgrade on Ubuntu
+  ansible.builtin.shell: do-release-upgrade -f DistUpgradeViewNonInteractive
+  register: ubuntu_dist
+  when: ubuntu_distupgrade | bool == true 
+
+- name: Reboot {{ ansible_hostname|lower }}
+  ansible.builtin.reboot:
+    reboot_timeout: 180
+  when: ubuntu_dist.changed
 
 - name: Remove OpenSUSE Cloud-init repository
   community.general.zypper_repository:
     name: "Cloud:Tools (15.3)"
     state: absent
   when:
-    - ansible_os_family == 'Suse'
+    - ansible_os_family == 'Suse' 
 
 - name: Update all packages Suse 
   community.general.zypper:
@@ -42,34 +74,41 @@
     update_cache: true
   when:
     - ansible_os_family == 'Suse'
+  register: suse_update
 
 - name: Reboot {{ ansible_hostname|lower }}
   ansible.builtin.reboot:
     reboot_timeout: 180
+  when: suse_update.changed
 
 - name: Add new repos Suse 
   shell: zypper -n --releasever={{ opensuse_version }} lr -u
   when:
     - ansible_os_family == 'Suse'
+    - SuseOs_upgrade | bool == true 
+  register: adding_new_repo
 
 - name: Refresh repos Suse
   shell: zypper -n --releasever={{ opensuse_version }} ref
   when:
     - ansible_os_family == 'Suse'
+    - adding_new_repo.changed
 
 - name: Perform upgrade of Suse {{ ansible_hostname|lower }} 
   shell: zypper -n --releasever={{ opensuse_version }} dup --download-in-advance
   when:
     - ansible_os_family == 'Suse'
+    - SuseOs_upgrade | bool == true
+  register: suse_dup
 
 - name: Reboot {{ ansible_hostname|lower }}
   ansible.builtin.reboot:
     reboot_timeout: 180
   when: 
-    - ansible_os_family == 'Suse' 
-
+    - suse_dup.changed
+  
 - name: "Uncordon node {{ ansible_hostname|lower }}."
-  become_user: rick 
+  become_user: local_user 
   connection: local
   vars:
     ansible_python_interpreter: /usr/bin/python3
@@ -78,10 +117,12 @@
     name: "{{ ansible_hostname|lower }}"
     kubeconfig: ~/.kube/{{ kubeconfig_name }}
   delegate_to: localhost
+  when: upgrade_k8s_node | bool == true
 
 - name: 120 seconds pause
-  become_user: rick 
+  become_user: local_user 
   connection: local
   pause:
     seconds: 120
   delegate_to: localhost
+  when: upgrade_k8s_node | bool == true

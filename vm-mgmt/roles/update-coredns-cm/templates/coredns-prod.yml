@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rke2-coredns-rke2-coredns
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/instance: rke2-coredns
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: rke2-coredns
+    helm.sh/chart: rke2-coredns-1.24.002
+    k8s-app: kube-dns
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: CoreDNS
+  annotations:
+    meta.helm.sh/release-name: rke2-coredns
+    meta.helm.sh/release-namespace: kube-system
+data:
+  Corefile: |
+    .:53 {
+        errors
+        health {
+            lameduck 5s
+        }
+        ready
+        kubernetes cluster.local in-addr.arpa ip6.arpa {
+            pods insecure
+            fallthrough in-addr.arpa ip6.arpa
+            ttl 30
+        }
+        hosts {
+          10.43.69.197 fasapp.se
+          10.43.69.197 www.fasapp.se
+          172.19.253.43 gitlab.int.vmar.se
+          172.18.253.29 git.vmar.se
+          10.43.69.197  fasapp.se
+          10.43.69.197  www.fasapp.se     # byt till den relevanta dns:en och nod-IP
+          10.43.69.197  calc.vmar.xyz
+          10.43.69.197  boozternetwork.com
+          10.43.69.197  www.boozternetwork.com
+          10.43.69.197  home.aviationisolutions.com
+          10.43.69.197  www.home.aviationisolutions.com
+          10.43.69.197  www.stage.aviationisolutions.com
+          10.43.69.197  stage.aviationisolutions.com
+          10.43.69.197  herelius.se
+          fallthrough
+        }
+        prometheus :9153
+        forward . /etc/resolv.conf
+        cache 30
+        loop
+        reload
+        loadbalance
+    }

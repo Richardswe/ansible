@@ -1,0 +1,10 @@
+--- 
+# vmar-rancher.yaml rancher-stage.yaml vmar-stage-cluster.yaml  vmar-prod.yaml
+# Choose kubeconfig 
+kubeconfig_name: 
+
+# local username
+local_username: rickard
+
+# coredns configfile
+core_dns: 
