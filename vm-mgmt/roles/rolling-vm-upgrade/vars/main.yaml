@@ -6,7 +6,7 @@ opensuse_version:
 kubeconfig_name: 
 
 # Your local user 
-local_user: rickard
+local_user: 
 
 # true or false boolean if the nodes are being used as k8s nodes.
 upgrade_k8s_node: false 
