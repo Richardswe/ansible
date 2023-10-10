@@ -1,5 +1,4 @@
 --- 
-# vmar-rancher.yaml rancher-stage.yaml vmar-stage-cluster.yaml  vmar-prod.yaml
 # Choose kubeconfig 
 kubeconfig_name: 
 
