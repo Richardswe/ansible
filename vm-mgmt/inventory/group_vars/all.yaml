@@ -1,3 +1,4 @@
 ---
 users:
-  - { name: username1 }
+  - { name: username }
+

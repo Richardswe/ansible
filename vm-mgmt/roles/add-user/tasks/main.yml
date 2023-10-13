@@ -44,7 +44,7 @@
   when: 
       (ansible_facts['distribution'] == "openSUSE Leap") or
       (ansible_facts['distribution'] == "SUSE")
-     
+
 - name: Add the users with the bash shell, appending the group 'sudo'
   user:
     name: "{{ item.name }}"
