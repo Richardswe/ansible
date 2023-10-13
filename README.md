@@ -17,10 +17,10 @@ add the server and replace the server groupname "db_servers" to your liking :)
 - hash the password you want to use in the cli: openssl passwd -6 -stdin
   type in your password and copy the hash to role/add-user/vars/main.yml
   and change the "username" before the "_" with the user in all.yaml 
-- run the playbook: ansible-playbook -i inventory/hosts.ini add-users.yaml -u "usernameONremoteSERVER" 
+- run the playbook: ansible-playbook add-users.yaml -i inventory/hosts.ini -u vagrant 
 ## Remove user
 ## Do the following
-- run playbook: ansible-playbook -i inventory/hosts.ini delete-users.yaml -u "usernameONremoteSERVER"
+- run playbook: ansible-playbook delete-users.yaml -i inventory/hosts.ini -u vagrant
 
 ## Dist-files 
 - Here you can distribute the sysctl.conf file and the hosts file which can come in handy. 
@@ -29,5 +29,5 @@ add the server and replace the server groupname "db_servers" to your liking :)
 - Modify host in dist-files-yaml 
 - Replace the IP/s in inventory/hosts.ini
 - Modify the hosts file at role/dist-files/files/hosts 
-- Run playbook: ansible-playbook 
+- Run playbook: ansible-playbook dist-files-yaml -i inventory/hosts.ini -u vagrant 
 
