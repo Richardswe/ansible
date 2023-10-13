@@ -12,9 +12,13 @@ users:
 ---
 in the inventory/hosts.ini
 add the server and replace the server groupname "db_servers" to your liking :)  
-
-# Ansible
-
+- hash the password you want to use in the cli: openssl passwd -6 -stdin
+  type in your password and copy the hash to role/add-user/vars/main.yml
+  and change the "username" before the "_" with the user in all.yaml 
+- run the playbook: ansible-playbook -i inventory/hosts.ini add-users.yaml -u "usernameONremoteSERVER" 
+# Remove user
+# Do the following
+- run playbook: ansible-playbook -i inventory/hosts.ini delete-users.yaml -u "usernameONremoteSERVER"
 
 
 
