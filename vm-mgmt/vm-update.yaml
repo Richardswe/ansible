@@ -1,5 +1,5 @@
 ---
-- hosts: vagrant_test
+- hosts: db_servers
   become: true 
   gather_facts: true 
   serial: 1

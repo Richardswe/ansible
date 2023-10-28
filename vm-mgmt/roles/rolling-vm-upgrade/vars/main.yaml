@@ -2,7 +2,7 @@
 # Choose OpenSUSE version 15.4 or 15.5
 opensuse_version: 
 
-# Choose kubeconfig 
+# Choose kubeconfig (on your local machine path: ~/.kube/cluster1.yaml)
 kubeconfig_name: 
 
 # Your local user 
