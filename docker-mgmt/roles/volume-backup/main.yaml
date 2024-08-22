@@ -1,0 +1,31 @@
+---
+
+
+- name: Execute SQL dump in a shell and gzip it
+  ansible.builtin.shell:
+    cmd: docker exec -it {{ PASSBOLT_DBCONTAINER_NAME }} -e MYSQL_DATABASE=$MYSQL_DATABASE_PASSBOLT -e MYSQL_PWD=$MYSQL_PWD_PASSBOLT \
+$i /usr/bin/mysqldump -u $MYSQL_USER_PASSBOLT $MYSQL_DATABASE_PASSBOLT \
+  gzip > $BACKUPDIR_PASSBOLT/$PASSBOLT_BACKUPNAME-$(date +"%Y%m%d%H%M").sql.gz
+
+- name: Stop Passbolt DB container
+  community.docker.docker_container:
+    name: "{{ PASSBOLT_DBCONTAINER_NAME }}"
+    state: stopped
+
+- name: Stop Passbolt container
+  community.docker.docker_container:
+    name: "{{ PASSBOLT_CONTAINER_NAME }}"
+    state: stopped
+
+- name: Copy files from GPG passbolt volume
+  ansible.builtin.copy:
+    src: "{{ PASSBOLT_GPG_VOLUME }}"
+    dest: BACKUPDIR_PASSBOLT/GPG_VOLUME/
+
+- name: Copy files from JWT passbolt volume
+  ansible.builtin.copy:
+    src: "{{ PASSBOLT_JWT_VOLUME }}"
+    dest: BACKUPDIR_PASSBOLT/JWT_VOLUME/
+
+cp $PASSBOLT_GPG_VOLUME -p $BACKUPDIR_PASSBOLT/GPG_VOLUME/
+cp $PASSBOLT_JWT_VOLUME -p $BACKUPDIR_PASSBOLT/JWT_VOLUME/
