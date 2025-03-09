@@ -1,0 +1,16 @@
+--- 
+# Passbolt database container name
+PASSBOLT_DBCONTAINER_NAME: passbolt-server-db-1
+# MYSQL_PWD_PASSBOLT=""
+PASSBOLT_CONTAINER: passbolt-passbolt-1
+MYSQL_DATABASE_PASSBOLT: passbolt
+MYSQL_USER_PASSBOLT: passbolt
+
+# Backup dir for passbolt
+BACKUPDIR_PASSBOLTDB: ~/docker-compose/passboltbackup/pbdatabase-backup
+BACKUPDIR_PASSBOLT: ~/docker-compose/passboltbackup
+DOCKERCOMPOSE_DIR: ~/docker-compose
+GPG_DIR: ~/docker-compose/passboltbackup/gpg
+JWT_DIR: ~/docker-compose/passboltbackup/jwt
+PBB_DIR: ~/docker-compose/passboltbackup/pbdatabase-backup
+

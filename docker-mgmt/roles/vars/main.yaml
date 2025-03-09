@@ -1,9 +1,0 @@
---- 
-# Passbolt database container name
-PASSBOLT_DBCONTAINER_NAME: 
-
-# Passbolt container name
-PASSBOLT_CONTAINER_NAME: 
-
-# coredns configfile
-core_dns: 

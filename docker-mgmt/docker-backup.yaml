@@ -1,11 +1,8 @@
 ---
-- name: Backup Docker volumes
-  hosts: localhost
-  become: yes
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: true
   vars_files:
-    - vars/services.yaml
-    
+    - vars/main.yaml
   roles:
-    - role: passbolt
-    # - role: invoiceninja
-    # - role: kimai
+    - {role: volume-backup }

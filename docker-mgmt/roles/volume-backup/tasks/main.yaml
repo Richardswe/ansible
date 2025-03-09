@@ -1,0 +1,64 @@
+---
+- name: Set timestamp variable
+  set_fact:
+    timestamp: "{{ ansible_date_time.iso8601_basic_short }}"
+
+- name: Ensure that directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0775'
+  loop:
+    - "{{ BACKUPDIR_PASSBOLT }}"
+    - "{{ BACKUPDIR_PASSBOLT }}/jwt"
+    - "{{ BACKUPDIR_PASSBOLT }}/gpg"
+    - "{{ BACKUPDIR_PASSBOLT }}/pbdatabase-backup"
+
+- name: Execute SQL dump in a shell and gzip it
+  ansible.builtin.shell:
+    cmd: |
+      docker exec "{{ PASSBOLT_DBCONTAINER_NAME }}" mariadb-dump -u"{{ MYSQL_USER_PASSBOLT }}" -p"{{ ansible_env.MYSQL_PWD_PASSBOLT }}" "{{ MYSQL_DATABASE_PASSBOLT }}" \
+      > "{{ BACKUPDIR_PASSBOLT }}/pbdatabase-backup/PBbackup.sql"
+
+- name: Copy files from JWT
+  ansible.builtin.shell:
+    cmd: docker cp passbolt-server-passbolt-1:/etc/passbolt/jwt {{ BACKUPDIR_PASSBOLT }}/jwt
+
+- name: Copy files from gpg
+  ansible.builtin.shell:
+    cmd: docker cp passbolt-server-passbolt-1:/etc/passbolt/gpg {{ BACKUPDIR_PASSBOLT }}/gpg
+
+- name: Create a tar.gz archive of the directory
+  community.general.archive:
+    path: "{{ BACKUPDIR_PASSBOLT }}"  # Directory to be archived
+    dest: "{{ BACKUPDIR_PASSBOLT }}/PB.tar.gz"  # Destination file
+    format: gz  # Use gzip compression for tar.gz
+    force_archive: true
+
+- name: Set the path to the file and passphrase
+  set_fact:
+    file_to_encrypt: "{{ BACKUPDIR_PASSBOLT }}/PB.tar.gz"
+    encrypted_file: "{{ DOCKERCOMPOSE_DIR }}/passbolt_{{ timestamp }}.tar.gz.enc"
+    encryption_passphrase: "{{ ansible_env.ENCRYPT_PW }}"
+
+- name: Encrypt the file using OpenSSL
+  ansible.builtin.shell:
+    cmd: |
+      openssl enc -aes-256-cbc -salt -in "{{ file_to_encrypt }}" -out "{{ encrypted_file }}" -k "{{ encryption_passphrase }}"
+
+- name: Send the file to Digitalocean Bucket
+  ansible.builtin.shell:
+    cmd: s3cmd --ssl put "{{ encrypted_file }}" s3://backup-bucket-01/passbolt/
+- name: Remove files in directories
+  shell: rm -rf "{{ GPG_DIR }}"; rm -rf "{{ JWT_DIR }}"
+
+- name: Remove dir contents
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_fileglob:
+    - "{{ GPG_DIR }}/*"
+    - "{{ JWT_DIR }}/*"
+    - "{{ PBB_DIR }}/*"
+    - "{{ BACKUPDIR_PASSBOLT }}/PB.tar*"
+    - "{{ DOCKERCOMPOSE_DIR }}/passbolt_*"
